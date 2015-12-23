@@ -1,0 +1,203 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <script src="js/Tween.js"></script>
+    <script src="js/Three.js"></script>
+    <script src="js/jquery.js"></script>
+    <script src="js/TrackballControls.js"></script>
+    <script src="js/CSS3DRenderer.js"></script>
+    <script src="js/BallGameInit.js"></script>
+    <script src="js/Ball.js"></script>
+    <style type="text/css">
+        body {
+            background-color: #dddddd;
+            margin: 0;
+            font-family: Helvetica, sans-serif;
+            overflow: hidden;
+        }
+
+        .element {
+            box-shadow: 0px 0px 12px rgba(0, 255, 255,0.8);
+            border: 1px solid rgba(127,255,255,0.25);
+            text-align: center;
+            cursor: default;
+            font-size: 20px;
+        }
+
+            .element:hover {
+                box-shadow: 0px 0px 12px rgba(0,255,255,0.75);
+                border: 1px solid rgba(127,255,255,0.75);
+            }
+
+        .platform {
+            overflow: hidden;
+            position: relative;
+            box-shadow: 0px 0px 12px rgba(255, 77, 77,0.8);
+            border: 3px solid rgb(255, 48, 48);
+            /*background-color: rgba(255,44,44,0.2);*/
+            background: -webkit-gradient(linear, 0 0, 0 100%, from(white), to(rgba(255, 77, 77,0.8)));
+        }
+
+        .ballsurface {
+            box-shadow: 0px 0px 12px rgb(255, 48, 48);
+            border: 1px solid rgba(127,255,255,0.25);
+            text-align: center;
+            cursor: default;
+        }
+
+        .bigtext {
+            font-size: 50px;
+            height: 50px;
+            position: relative;
+            z-index: 100;
+        }
+
+        #button {
+            position: absolute;
+            left: 0px;
+            top: 0px;
+            z-index: 1000;
+        }
+
+        .button {
+            width: 200px;
+            height: 50px;
+            border: 3px solid red;
+            font-size: 30px;
+            text-align: center;
+            line-height: 50px;
+            float: left;
+            margin-right: 30px;
+        }
+
+        .createDiv {
+            position: absolute;
+            background-color: #968fdb;
+            font-size: 50px;
+        }
+
+        .targetDiv {
+            width: 100px;
+            height: 100px;
+            background-color: yellow;
+            border-radius: 50px;
+            position: absolute;
+            left: 2000px;
+            top: 3000px;
+        }
+
+        #currendLevel {
+            font-size: 70px;
+            position: absolute;
+            left: 1850px;
+            top: 0px;
+        }
+    </style>
+</head>
+<body>
+    <div id="button">
+        <div class="button" onclick="startNewGame()">开始新游戏</div>
+        <div class="button" onclick="freePlay()">随便玩玩</div>
+        <!--<div class="button" id="currendLevel">Level:0</div>-->
+        <div style="clear: both;"></div>
+        <div style="font-size: 30px;" id="point">
+            提示1：单指可移动场景，双指可缩放场景<br />
+            提示2：游戏目的为让小球到达右下角，不要碰到紫色方块
+        </div>
+        <div class="button" onclick="hidePoint()" id="know">知道了！</div>
+    </div>
+    <div id="container"></div>
+</body>
+</html>
+<script type="text/javascript">
+    var level = 1;
+    var lnum = 1;
+    var currentDivs = [];
+    var obstructionObject = [];
+    var obstructionDiv = [];
+    var target = { px: 0, py: 0, pw: 0, ph: 0 };
+    var play = false;
+    function hidePoint() {
+        $("#point").hide();
+        $("#know").hide();
+    }
+    function startNewGame() {
+        level = 1; lnum = 1;
+        resetAll();
+    }
+    function freePlay() {
+        platformDiv.innerHTML = "";
+        clearObstruction();
+        platformDiv.innerHTML = "";
+        ball.StartRun();
+        play = false;
+    }
+
+    function resetAll() {
+
+        play = true;
+        clearObstruction();
+        ball.move(-950, 1450);
+        ball.StartRun();
+        platformDiv.innerHTML = "";
+        for (var i = 0; i < lnum; i++) {
+            var element = document.createElement("div");
+            element.className = "createDiv";
+            var width = Math.random() * 300 + 100;
+            var height = (Math.random() * 300 + 100);
+            var left = (Math.random() * 1700 + 100);
+            var top = (Math.random() * 1900 + 100);
+            element.style.width = width + "px";
+            element.style.height = height + "px";
+            element.style.left = left + "px";
+            element.style.top = top + "px";
+            element.id = "c" + i;
+            platformDiv.appendChild(element);
+            setObstruction(left, top, width, height);
+            obstructionDiv.push(element);
+        }
+        var element = document.createElement("div");
+        element.className = "targetDiv";
+        setTarget(2000, 3000, 100, 100);
+        platformDiv.appendChild(element);
+
+        var element = document.createElement("div");
+        element.id = "currendLevel";
+        element.innerText = "Level:0";
+        platformDiv.appendChild(element);
+
+        document.getElementById("currendLevel").innerText = "Level:" + level;
+    }
+
+    function setObstruction(dx, dy, width, height) {
+        obstructionObject.push({ px: dx - 1055 - ball.redius, py: 1555 - dy + ball.redius, pw: dx - 1055 + width + ball.redius, ph: 1555 - dy - height - ball.redius });
+    }
+    function clearObstruction() {
+        obstructionObject = [];
+    }
+    function setTarget(dx, dy, width, height) {
+        target.px = dx - 1055 - ball.redius;
+        target.py = 1555 - dy + ball.redius;
+        target.pw = dx - 1055 + width + ball.redius;
+        target.ph = 1555 - dy - height - ball.redius;
+    }
+    function testImpact() {
+        if (play) {
+            var pX = ball.position.x, pY = ball.position.y;
+            for (var i = 0; i < obstructionObject.length; i++) {
+                var o = obstructionObject[i];
+                if (pX > o.px && pX < o.pw && pY > o.ph && pY < o.py) {
+                    $("#c" + i).css("backgroundColor", "red");
+                    ball.StopRun();
+                    play = false;
+                    level = 1; lnum = 1;
+                }
+            }
+            if (pX > target.px && pX < target.pw && pY > target.ph && pY < target.py) {
+                level++; lnum++;
+                resetAll();
+            }
+        }
+    }
+</script>
