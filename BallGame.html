@@ -2,6 +2,7 @@
 <html>
 <head>
     <meta charset="utf-8">
+    <title>小球滚啊滚</title>
     <script src="js/Tween.js"></script>
     <script src="js/Three.js"></script>
     <script src="js/jquery.js"></script>
@@ -68,7 +69,8 @@
             text-align: center;
             line-height: 50px;
             float: left;
-            margin-right: 30px;
+            margin-left: 50px;
+            margin-top:50px;
         }
         .buttona {
             height: 50px;
@@ -104,6 +106,9 @@
     </style>
 </head>
 <body>
+    <div style="position:absolute;font-size:25px;">        
+        https://github.com/TeraTian/BallGame
+    </div>
     <div id="button">
         <div class="button" onclick="startNewGame()">开始新游戏</div>
         <div class="button" onclick="freePlay()">随便玩玩</div>
@@ -111,8 +116,9 @@
         <div style="clear: both;"></div>
         <div style="font-size: 30px;" id="point">
             提示1：请使用手机打开该网页<br />
-            提示2：单指可移动场景，双指可缩放场景<br />
-            提示3：游戏目的为让小球到达右下角，不要碰到紫色方块
+            提示2：放平手机，小球会随着手机的倾斜角度滚动<br />
+            提示3：单指可移动场景，双指可缩放场景<br />
+            提示4：游戏目的为让小球到达右下角，不要碰到紫色方块
         </div>
         <div class="buttona" onclick="hidePoint()" id="know">（╯－＿－）╯╧╧朕知道了！</div>
     </div>
