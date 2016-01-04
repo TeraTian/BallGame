@@ -37,7 +37,7 @@
             box-shadow: 0px 0px 12px rgba(255, 77, 77,0.8);
             /*background-color: rgba(255,44,44,0.2);*/
             /*background: -webkit-gradient(linear, 0 0, 0 100%, from(white), to(rgba(255, 77, 77,0.8)));*/
-            background-image: url(image/bg.png);
+            background-image: url(image/bg.jpg);
             background-repeat: no-repeat;
         }
 
@@ -110,8 +110,8 @@
             position: absolute;
             z-index: 10;
             top: 25px;
-            width: 153px;
-            height: 77px;
+            width: 170px;
+            height: 80px;
         }
 
             #begin:active {
@@ -158,9 +158,9 @@
     </style>
 </head>
 <body>
-    <div style="position: absolute; font-size: 25px;">
+    <!--<div style="position: absolute; font-size: 25px;">
         https://github.com/TeraTian/BallGame
-    </div>
+    </div>-->
     <div id="begin" ontouchstart="" onclick="startNewGame()"></div>
     <div id="back"></div>
     <div id="rules">
@@ -169,7 +169,7 @@
     <div id="result">
         <div id="levelResult">1</div>
         <div id="nameResult">手残大圣</div>
-        <img src="image/animate.gif" usemap="#resultMap"/>
+        <img src="image/result.png" usemap="#resultMap"/>
     </div>
     <div id="container"></div>
     <map name="ruleMap">
@@ -178,6 +178,7 @@
     </map>
     <map name="resultMap">
         <area shape="rect" coords="230,738,520,808" onclick="resetAll()">
+        <area shape="circle" coords="625,543,28" onclick="resetAll()">
     </map>
 </body>
 </html>
@@ -254,7 +255,7 @@
     }
 
     function setObstruction(dx, dy, r) {
-        obstructionObject.push({ px: dx - 335, py: 647 - dy, r: r });
+        obstructionObject.push({ px: dx - 332, py: 644 - dy, r: r });
     }
     function clearObstruction() {
         obstructionObject = [];

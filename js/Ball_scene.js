@@ -2,9 +2,9 @@
     this.scene = scene;
     this.camera = camera;
 
-    this.redius = 30;
+    this.redius = 20;
     this.surfaceNum = 31;
-    this.surfaceSize = 15;
+    this.surfaceSize = 5;
     this.position = { x: 0, y: 0, z: 0 };
     this.center = { x: 0, y: 0, z: 0 };
     this.direction = 0;
@@ -167,8 +167,8 @@
             else {
                 direction = Math.atan(vY / vX) + Math.PI;
             }
-            if ((pX > 375 - 30 - 80 && vX > 0) || (pX < -(375 - 30 - 80) && vX < 0)) vX = -vX;
-            if ((pY > 667 - 30 - 90 && vY > 0) || (pY < -(667 - 30 - 90) && vY < 0)) vY = -vY;
+            if ((pX > 375 - 20 - 80 && vX > 0) || (pX < -(375 - 20 - 80) && vX < 0)) vX = -vX;
+            if ((pY > 667 - 20 - 90 && vY > 0) || (pY < -(667 - 20 - 90) && vY < 0)) vY = -vY;
         }
     }
     this.move = function (px, py) {
