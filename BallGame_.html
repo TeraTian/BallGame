@@ -8,8 +8,8 @@
     <script src="js/jquery.js"></script>
     <script src="js/TrackballControls.js"></script>
     <script src="js/CSS3DRenderer.js"></script>
-    <script src="js/BallGameInit_scene.js"></script>
-    <script src="js/Ball_scene.js"></script>
+    <script src="js/BallGameInit.js"></script>
+    <script src="js/Ball.js"></script>
     <style type="text/css">
         body {
             background-color: #dddddd;
@@ -35,10 +35,9 @@
             overflow: hidden;
             position: relative;
             box-shadow: 0px 0px 12px rgba(255, 77, 77,0.8);
+            border: 3px solid rgb(255, 48, 48);
             /*background-color: rgba(255,44,44,0.2);*/
-            /*background: -webkit-gradient(linear, 0 0, 0 100%, from(white), to(rgba(255, 77, 77,0.8)));*/
-            background-image: url(image/bg.png);
-            background-repeat: no-repeat;
+            background: -webkit-gradient(linear, 0 0, 0 100%, from(white), to(rgba(255, 77, 77,0.8)));
         }
 
         .ballsurface {
@@ -49,10 +48,10 @@
         }
 
         .bigtext {
-            /*font-size: 50px;
+            font-size: 50px;
             height: 50px;
+            position: relative;
             z-index: 100;
-            border:1px solid red;*/
         }
 
         #button {
@@ -71,9 +70,8 @@
             line-height: 50px;
             float: left;
             margin-left: 50px;
-            margin-top: 50px;
+            margin-top:50px;
         }
-
         .buttona {
             height: 50px;
             border: 3px solid red;
@@ -83,9 +81,10 @@
             float: left;
             margin-right: 30px;
         }
-
         .createDiv {
             position: absolute;
+            background-color: #968fdb;
+            font-size: 50px;
         }
 
         .targetDiv {
@@ -104,107 +103,39 @@
             left: 1850px;
             top: 0px;
         }
-
-        #begin {
-            background-image: url(image/begin.png);
-            position: absolute;
-            z-index: 10;
-            top: 25px;
-            width: 153px;
-            height: 77px;
-        }
-
-            #begin:active {
-                background-image: url(image/begin_click.png);
-            }
-
-        #rules {
-            width: 563px;
-            height: 347px;
-            position: absolute;
-            z-index: 12;
-        }
-        #back {
-            position:absolute;
-            width:100%;
-            height:100%;
-            z-index:11;
-            background-image:url(image/back.png)
-        }
-        #result {
-            position:absolute;
-            width:750px;
-            height:1334px;
-            margin:auto;
-            display:none;
-            z-index:20;
-        }
-        #levelResult {
-            position:absolute;
-            left:325px;
-            top:602px;
-            font-size:20px;
-            width:25px;
-            text-align:center;
-        }
-        #nameResult {
-            position:absolute;
-            left:310px;
-            top:658px;
-            width:130px;
-            font-size:30px;
-            text-align:center;
-        }
     </style>
 </head>
 <body>
-    <div style="position: absolute; font-size: 25px;">
+    <div style="position:absolute;font-size:25px;">        
         https://github.com/TeraTian/BallGame
     </div>
-    <div id="begin" ontouchstart="" onclick="startNewGame()"></div>
-    <div id="back"></div>
-    <div id="rules">
-        <img src="image/rules.png" usemap="#ruleMap" />
-    </div>
-    <div id="result">
-        <div id="levelResult">1</div>
-        <div id="nameResult">手残大圣</div>
-        <img src="image/animate.gif" usemap="#resultMap"/>
+    <div id="button">
+        <div class="button" onclick="startNewGame()">开始新游戏</div>
+        <div class="button" onclick="freePlay()">随便玩玩</div>
+        <!--<div class="button" id="currendLevel">Level:0</div>-->
+        <div style="clear: both;"></div>
+        <div style="font-size: 30px;" id="point">
+            提示1：请使用手机打开该网页<br />
+            提示2：放平手机，小球会随着手机的倾斜角度滚动<br />
+            提示3：单指可移动场景，双指可缩放场景<br />
+            提示4：游戏目的为让小球到达右下角，不要碰到紫色方块
+        </div>
+        <div class="buttona" onclick="hidePoint()" id="know">（╯－＿－）╯╧╧朕知道了！</div>
     </div>
     <div id="container"></div>
-    <map name="ruleMap">
-        <area shape="rect" coords="140,242,420,299" onclick="hideRule()">
-        <area shape="circle" coords="528,33,28" onclick="hideRule()">
-    </map>
-    <map name="resultMap">
-        <area shape="rect" coords="230,738,520,808" onclick="resetAll()">
-    </map>
 </body>
 </html>
 <script type="text/javascript">
-    $(function () {
-        var width = window.innerWidth;
-        var height = window.innerHeight;
-        var left = (width - $("#rules").width()) / 2;
-        var top = (height - $("#rules").height()) / 2;
-        $("#rules").css({ top: top, left: left });
-        var left = (width - $("#result").width()) / 2;
-        var top = (height - $("#result").height()) / 2;
-        $("#result").css({ top: top, left: left });
-    });
-    function test() {
-        alert(123);
-    }
     var level = 1;
     var lnum = 1;
     var currentDivs = [];
     var obstructionObject = [];
     var obstructionDiv = [];
-    var target = { px: 0, py: 0, r: 0 };
+    var target = { px: 0, py: 0, pw: 0, ph: 0 };
     var play = false;
-    function hideRule() {
-        $("#rules").hide();
-        $("#back").hide();
+    function hidePoint() {
+        $("#point").hide();
+        $("#know").hide();
     }
     function startNewGame() {
         level = 1; lnum = 1;
@@ -217,32 +148,33 @@
         ball.StartRun();
         play = false;
     }
-    var resultTimeout;
+
     function resetAll() {
-        clearTimeout(resultTimeout);
-        $("#result").hide();
+
         play = true;
         clearObstruction();
-        ball.move(-255, 540);
+        ball.move(-950, 1450);
         ball.StartRun();
         platformDiv.innerHTML = "";
         for (var i = 0; i < lnum; i++) {
-            var element = document.createElement("img");
+            var element = document.createElement("div");
             element.className = "createDiv";
-            var left = (Math.random() * 370 + 70);
-            var top = (Math.random() * 870 + 70);
-            var num = Math.floor(Math.random() * 9) + 1;
+            var width = Math.random() * 300 + 100;
+            var height = (Math.random() * 300 + 100);
+            var left = (Math.random() * 1700 + 100);
+            var top = (Math.random() * 1900 + 100);
+            element.style.width = width + "px";
+            element.style.height = height + "px";
             element.style.left = left + "px";
             element.style.top = top + "px";
             element.id = "c" + i;
-            element.src = "image/" + num + ".png";
             platformDiv.appendChild(element);
-            setObstruction(left, top, 33);
+            setObstruction(left, top, width, height);
             obstructionDiv.push(element);
         }
         var element = document.createElement("div");
         element.className = "targetDiv";
-        setTarget(391, 739, 100);
+        setTarget(2000, 3000, 100, 100);
         platformDiv.appendChild(element);
 
         var element = document.createElement("div");
@@ -253,33 +185,31 @@
         document.getElementById("currendLevel").innerText = "Level:" + level;
     }
 
-    function setObstruction(dx, dy, r) {
-        obstructionObject.push({ px: dx - 335, py: 647 - dy, r: r });
+    function setObstruction(dx, dy, width, height) {
+        obstructionObject.push({ px: dx - 1055 - ball.redius, py: 1555 - dy + ball.redius, pw: dx - 1055 + width + ball.redius, ph: 1555 - dy - height - ball.redius });
     }
     function clearObstruction() {
         obstructionObject = [];
     }
-    function setTarget(dx, dy, r) {
-        target.px = dx;
-        target.py = dy;
-        target.r = r;
+    function setTarget(dx, dy, width, height) {
+        target.px = dx - 1055 - ball.redius;
+        target.py = 1555 - dy + ball.redius;
+        target.pw = dx - 1055 + width + ball.redius;
+        target.ph = 1555 - dy - height - ball.redius;
     }
     function testImpact() {
         if (play) {
             var pX = ball.position.x, pY = ball.position.y;
-            //$("#ballp").text(Math.floor(pX) + "    " + Math.floor(pY) + "    " + Math.floor(obstructionObject[0].px) + "    " + Math.floor(obstructionObject[0].py));
             for (var i = 0; i < obstructionObject.length; i++) {
                 var o = obstructionObject[i];
-                if (Math.sqrt((pX - o.px) * (pX - o.px) + (pY - o.py+14) * (pY - o.py+14)) < o.r + ball.redius-2) {
+                if (pX > o.px && pX < o.pw && pY > o.ph && pY < o.py) {
                     $("#c" + i).css("backgroundColor", "red");
-                    $("#levelResult").text(level);
                     ball.StopRun();
                     play = false;
                     level = 1; lnum = 1;
-                    resultTimeout = setTimeout(function () { $("#result").show() }, 1500);
                 }
             }
-            if (pX > 255 && pY<-530) {
+            if (pX > target.px && pX < target.pw && pY > target.ph && pY < target.py) {
                 level++; lnum++;
                 resetAll();
             }
